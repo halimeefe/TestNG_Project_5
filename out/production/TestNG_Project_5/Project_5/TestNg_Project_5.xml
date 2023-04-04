@@ -1,0 +1,31 @@
+
+
+
+
+<suite name="MySuit Test" parallel="tests" thread-count="2">
+    <test name="Firefox Test">-->
+        <parameter name="browserTipi" value="firefox"/>
+
+
+<classes>
+    <class name="Project_5.TestClass"/>
+
+</classes>
+    </test>
+
+<!--    <test name="Firefox Test">-->
+<!--        <parameter name="browserTipi" value="firefox"/>-->
+
+<!--        <classes>-->
+
+<!--            <class name="Project_5.TestClass"/>-->
+
+<!--        </classes>-->
+<!--    </test>-->
+
+
+
+</suite>
+
+
+

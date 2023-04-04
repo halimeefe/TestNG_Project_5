@@ -1,0 +1,449 @@
+Assert.assertEquals(s1,s2,"Karşılaştırma Başarısız Oldu"); ->EŞİTLİK BEKLİYORUZ ,YEŞİL TİK----
+
+     Assert.assertNotEquals(s1,s2," expected ve actual result eşit oldu") -->EŞİTLİK BEKLEMİYORUZ ,SARI TİK
+
+     Assert.assertTrue(s1==s2,"gerçek sonuç ve beklenen eşit olmadı"); -->EŞİTLİK BEKLEMİYORUZ  ,SARI TİK
+
+     Assert.asssertNull(s1," Oluşan null gerçekleşmedi")  ->NULL BEKLİYORUZ
+
+     Assert.fail(); --> PROGRAMI BREAK GİBİ KIRMAK İÇİN KULLANIYORUZ
+
+
+***********************************************************************************************************
+
+
+@Test(priority = 1) TESTLERE ÇALIŞTIRIRKEN ÖNCELİK VERMEK İÇİN KULLANIRIZ
+
+*************************************************************************************************************               2
+
+@Test(dependsOnMethods ={"startCar"}) --> dependOnMethods diğer testleri başka testin çalışmasına bağlar
+void driveCar(){
+
+Örnek : ÖNCE REGİSTER SONRA LOGİN GİBİ
+
+**************************************************************************************************************
+                                  PARAMETREYE GÖRE XML
+
+        @Test
+        @Parameters("mesaj" )                              // XML DEKİ PARAMETRE ADI AYNI OLMAK ZORUNDA
+        void contactUs(String gelenMesaj) {
+                                                          //STRİNG GELENMESAJ : METOD İÇİN GEREKLİ TANIMLAMA AYNI OLMAK ZORUNDA DEĞİL   3
+        driver.get("https://opencart.abstracta.us/index.php?route=account/login");
+
+*******************************************************************************************************************************
+
+
+                    DATA PROVİDER DA XML KULLANMAYA GEREK KALMAZ
+
+
+ @Test(dataProvider = "getData")    //TEST BÖLÜMÜ                                                                 6
+    void test1(String text) {
+        System.out.println("productName:" + text);
+
+------------------------------------------------------------------------
+ @DataProvider              // DATA BÖLÜMÜ
+     Object[] getData() {
+        {
+            Object[] data = {"Mac", "Ipad", "samsung"};
+            return data;
+}
+
+
+*************************************************************************************************
+                           AUTO GÜN AY YIL SEÇİMİ RANDOM OLARAK
+
+                Public static void selectDropDown(WebElement element){
+
+        list <WebElement> list =ReusableMethods.select(element).getOptions();
+        int index =ReusableMethods.random().nextInt(list.size));
+        while (index == 0){                                                                                          7
+        index =ReusableMethods.random().nextInt(list.size());
+       }
+      ReusableMethods.select(element).selectByIndex(index);
+     }
+}
+
+******************************************************************************************************
+                                       RASTGELE SELECT OPTİONS SEÇİM FONKSİYONU
+
+
+    Select dropdown = new Select(driver.findElement(By.id("id")));
+
+     //Get all options
+        List<WebElement> dd = dropdown.getOptions();
+
+       int index = 0;            //if list contains only one element it will take that element                           8
+       if(dd.size()>1){
+   //Get a random number between 1, size of dd
+
+    random rand = new Random();
+    index = rand.nextInt(dd.size()-1);
+
+        }else if(dd.size()<1){
+
+          //print error message
+
+             int = -1;
+            }
+                     if (index >= 0){
+
+                   dropdown.selectByIndex(index);
+ }
+**********************************************************************************************
+
+
+                                   SELENİUM FONKSİYONLAR
+
+     NAVİGATE KULLANIMI :   System.out.println(driver.getCurrentUrl()
+                            driver.navigate().back();
+                            MyFunc.Bekle(3);                                                            9
+                            System.out.println(driver.getCurrentUrl());
+                            driver.navigate().forward();
+                            MyFunc.Bekle(3);
+                            System.out.println(driver.getCurrentUrl());
+
+
+----------------------------------------------------------------------------------------------------
+
+                              JAVASCRİPT EXECUTER FONKSİYONLARI
+
+          JavascriptExecutor js=(JavascriptExecutor)driver;
+
+          js.executeScript("window.scrollTo(0,document.body.scrollHeight)")-- SAYFANIN ENSONUNA GİDER                      10
+
+          js.executeScript("window.scrollBy(document.body.scrollHeight,0)")-- SAYFANIN EN BAŞA GERİ DÖNER
+
+           js.executeScript("arguments[0].scrollIntoView();",oneCat)  -- ELEMENTİ GÖRENE KADAR GİDER -- parantez içine false( elmnt.syfnın altında olsun)
+
+           js.executeScript("window.scroll(77,7011)"); -- ELEMENTİN LOKASYONUNA GİDER
+
+
+---------------------------------------------------------------------------------------------------------------------------
+                                 BİR ŞABLONDAKİ BÜTÜN TASKLARI YAZDIRMA
+
+
+        List<WebElement> satirlar = driver.findElements(By.xpath("//table[@id='task-table']//tbody//tr"));       11
+
+        for (int i = 0; i < satirlar.size(); i++) {
+
+            System.out.println(satirlar.get(i).getText() + "\n");
+        }
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+               SEPETE EKLENEN ÜRÜNLERİN ÜCRETLERİ
+
+         List<WebElement> ucretler=driver.findElements(By.xpath("//div[@class='inventory_item_price']"));             12
+        double toplam=0;
+
+         for (WebElement e:ucretler){
+             System.out.println("e.getText() ="+e.getText()); --- İKİ ÜRÜNÜN ÜCRETİNİ LİST İLE YAZDIRDIK
+             toplam=toplam+Double.parseDouble(e.getText().substring(1));
+                                                                       //replaceAll ile ["^0-9.,",""]bu şekilde regex ilede olur
+         }
+            System.out.println("toplam:"+toplam);
+
+        WebElement webToplam=driver.findElement(By.xpath("//div[@class='summary_subtotal_label']"));
+        System.out.println("webToplam.getText()="+webToplam.getText()); ---  $ işareti ile çıktı
+        System.out.println("webToplam.getText()="+webToplam.getText().replaceAll("[^0-9,.]",""));--- $ işaretini kaldırdık
+        Double altToplam=Double.parseDouble(webToplam.getText().replaceAll("[^0-9,.]",""));//WEBTOPLAMI ALTTOPLAMA EŞİTLEDİK
+
+        Assert.assertTrue("Değerler eşit değil",(toplam==altToplam));
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+                                        ELEMANIN STATÜSÜ
+
+          System.out.println("cumartesi.isDisplayed()"+cumartesi.isDisplayed());// yazı görünüyor mu
+          System.out.println("cumartesi.isEnabled()"+cumartesi.isEnabled());//buton etkin mi yani aktif mi               13
+         System.out.println("cumartesi.isSelected()"+cumartesi.isSelected());//kutucuk tiklendimi
+
+----------------------------------------------------------------------------------------------------------------------------
+
+                                       SELECT TAGİ İLE BAŞLIYORSA
+
+
+          Select ddMenu=new Select(webMenu);
+        ddMenu.selectByIndex(4);------------------------------------İSTER BU ŞEKİLDE INDEXLE SEÇEBİLİRSİN                   14
+        ddMenu.selectByValue("saerch-alias=electronics");-----------İSTER BU ŞEKİLDE VALUE İLE ALABİLİRSİN
+        ddMenu.selectByVisibleText("Elektronik");----------------- İSTER BU ŞEKİLDE GÖRÜNEN STRİNG İLE SEÇEBİLİRSİN
+
+
+----------------------------------------------------------------------------------------------------------------------------------
+                                       ACTİONS CLASS
+
+
+        Actions aksiyonlar =new Actions(driver);
+
+       aksiyonlar.clickAndHold(oslo).build().perform();---------------------oslo yu tıklat ve al
+      aksiyonlar.moveToElement(norway).release().build().perform();---------norway in üzerine git bırak                          15
+
+
+      Action aksiyon=aksiyonlar.moveToElement(element).build(),aksiyon.perform(); --HOOWER,ELEMANIN RENKLİ HALE GELMESİ ETKİNLEŞMESİ
+
+      Action aksiyon=aksiyonlar.moveToElement(element).contextClick().build().aksiyon.perform();-----RİGHTCLİCK
+
+      Action aksiyon=aksiyonlar.dragAndDropBy(solSurgu, 150, 0).build().perform();--ELEMENTİ SÜRÜKLE
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+                                    COOKİESLERİ KAPAT
+
+           List<WebElement> cookiesAccept =driver.findElements(By.cssSelector("[class='wt-btn wt-btn-filled wt-mb-xs-0']"));  16
+           if (cookiesAccept.size()>0)      //varsa
+            cookiesAccept.get(0).click();  //kapat , tıklat
+
+---------------------------------------------------------------------------------------------------------------------------------------
+                                    İNFO ALERT
+
+          driver.switchTo().alert().accept();  --KAPAT                                           17
+
+         driver.switchTo().alert().dismiss();---cancel
+         driver.switchTo().alert().gettext();----uyarı yazısını alma
+
+-------------------------------------------------------------------------------------------------------------------------
+
+         EXPLİCİT WAİT----WebDriverWait bekle=new WebDriverWait(driver, Duration.ofSeconds(30));
+                         bekle.until(ExpectedConditions.visibilityOfElementLocated   (By.xpath("//p[text()='WebDriver']")));
+
+ bekle.until(ExpectedConditions.textToBe(By.cssSelector("[id='submit-control']"),"Form submited Successfully!"));  --texti bu olana kadar bekle
+
+
+
+ WebElement cnt1=wait.until(ExpectedConditions.elementToBeClickable(By.id("button-payment-address")));*******************   18
+     cnt1.click();  ---GİBİ TEK KALEMDE YAZABİLİRİZ ÇÜNKÜ BASE DRİVERDA NEW LEDİK
+
+VE URL CONTAİNS İ ANA SAYFADA OLDUĞUMUZU DOĞRULAMAK İÇİN KULLANIRIZ
+
+
+
+  .titleIs -> **title bu olana kadar bekle **---------------------TİTLE BU OLANA KADAR
+
+    .titleContains -> **title ın da bu kelime geçene kadar bekle**----------TİTLE DA BU GEÇENE KADAR
+
+    .urlToBe ->** url bu olana kadar bekle***--------------------URL BU OLANA KADAR
+
+    .urlContains ->** url de bu kelime geçene kadar bekle**-----------
+
+    .visibilityOfElementLocated ->** eleman DOM da var ve gözükür olana kadar bekle**------LOCATE
+
+   .visibilityOfTheElement ->** eleman gözükene kadar bekle**-------------ELEMAN GÖZÜKENE KADAR GÖRSEL                          18
+
+   .InvisibilityOfTheElement -> eleman kaybolana kadar bekle
+
+   .elementToBeClickable -> **eleman tıklanabilir olana kadra bekle**--------TIKLANABİLİR OLANA KADAR BEKLE
+
+    .elementToBeSelected ->** eleman seçilebilir olana kadra bekle**
+
+    .textToBe -> elemanda verilen txt gözükene kadar bekle.--------------------YAZI BU OLANA KADAR BEKLE YADA MESAJ ÇIKANA KADAR
+
+    .alertIsPresent() ** -> alert çıkana kadar bekle.**-------------------------ALERT ÇIKANA KADAR BEKLE
+
+    .visibilityOfAllElementsLocatedBy -> locator ile bütün elemanlari gözükene kadar bekle
+
+    .visibilityOfAllElements -> Verilen elemanların listesindeki tüm elemanlar gözrünür olana kadar bekle
+
+    .numberOfElementsToBe  -> verilen locatora sahip elemanların sayısı bu olana kadar bekle
+
+    .numberOfElementsToBeLessThan -> verilen locatora sahip elemanların sayısı verilenden az olana kadar bekle
+
+    .numberOfElementsToBeMoreThan -> verilen locatora sahip elemanların sayısı verilenden fazla olana kadar bekle
+
+   .elementStaleness ->*** verilen element bayatlaması geçene kadar bekle**----------BAYATLAMASI GEÇENE KADAR SELECT İNDEXLERDE
+
+--------------------------------------------------------------------------------------------------------
+                           EKRAN GÖRÜNTÜSÜ ALMA
+
+
+       List<WebElement> hatamesaji=driver.findElements(By.cssSelector("div[role='alert']"));                     19
+
+        if (hatamesaji.size()>0){ ------------ HATA VARSA
+            System.out.println("Hata oluştu");-------EKRANI KAYDET
+
+            TakesScreenshot ts=(TakesScreenshot) driver;----------EKRAN GÖRÜNTÜSÜ ALMA DEĞİŞKENİNİ TANIMLADIM
+            File hafizadakiHali=ts.getScreenshotAs(OutputType.FILE);----------2.AŞAMA EKRAN GÖRÜNTÜSÜ ALINDI ,HAFIZADA
+            //HAFIZADAKİ BU BİLGİYİ DOSYA OLARAK KAYDET
+            FileUtils.copyFile(hafizadakiHali,new File("ekranGörüntüleri\\screenshot.png")); ------hatanın ekran görüntüsünü al
+
+
+---------------------------------------------------------------------------------------------------------------------------------------
+                            BÜTÜN GÖRSELLERİ KUTUCUĞA YERLEŞTİRME                                 20
+
+       Actions actions=new Actions(driver);
+
+        WebElement iframe=driver.findElement(By.cssSelector("[class='demo-frame lazyloaded']"));---İFRAME İLE KUNUN İÇİNE ULAŞMAMIZ LAZIM
+        driver.switchTo().frame(iframe);
+
+        List<WebElement> galeries=driver.findElements(By.cssSelector("li[class='ui-widget-content ui-corner-tr ui-draggable ui-draggable-handle']"));
+        WebElement trash=driver.findElement(By.cssSelector("[id='trash']"));
+
+        for (WebElement galery : galeries){   ---------------GÖRSELLERİ TOPLADIK
+           actions.clickAndHold(galery).build().perform();------GALERİDEN SÜRÜKLEDİK
+            actions.moveToElement(trash).release().build().perform();-----KUTUCUĞA BIRAKTIK
+
+----------------------------------------------------------------------------------------------------------------------------------
+                                             İFRAME
+
+
+
+    WebElement iframe=driver.findElement(By.cssSelector("#frame1"));                                         21
+    driver.switchTo().frame(iframe);
+    //System.out.println(iframe.getText());---İFRAME İLE WEBELEMENTTEN ALIP TEXTİ YAZDIRMA
+
+ ----------------------------------------------------------------------------------------------------------------------------------
+
+                                                 WİNDOWHANDLES
+
+        String firstWin=driver.getWindowHandle(); --ilk pencereyi kaydet                             22
+
+       elementin locate ini yaz webelemetle
+
+        Set<String> windowId=driver.getWindowHandles(); ----------- CHİLD WİNDOWLARI SETTE TOPLADIK
+
+    for (String w : tümPencereler) {
+
+        driver.switchTo().window(w)
+
+        }
+-------------------------------------------------------------------------------------------------------------------------
+
+                              REGEX DİGİTS İLE FİYATIN ÖNÜNDEKİ YAZIYI SİL                     23
+
+         WebElement firstPrice=driver.findElement(By.xpath("//div[@class='prices']/span"));-- ilk fiyatı kaydettik,sepetteki fiyatla karşılaştırcaz
+
+        String doubleStrprice =firstPrice.getText().replaceAll("[^\\d+\\.\\d+]","");-------- html kodu olarak önünde bulunan yazıyı sildirdik
+
+        Double doublePrice =Double.parseDouble(doubleStrprice);------------------------ burdada double a çevirdik
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+                      BUTONUN ÜZERİNDEKİ YAZIYI ALMA                          24
+
+
+        WebElement Uncheck = driver.findElement(By.id("check1"));  -----LOCATE AL
+        System.out.println(Uncheck.getAccessibleName().substring(0)); ---- BUTTONUN ÜZERİNDEKİ YAZIYI OKUT
+
+----------------------------------------------------------------------------------------------------------------------------------
+                                                    CSS SELECTOR                25
+
+  ID Seçici (#ID)
+  Class Seçici (.class)
+  .header-links a.ico-register
+  .gender :nth-child(2)>input
+  input[data-val-required^='First name']
+  .form-fields div:nth-child(3)>input
+  input[data-val-equalto^='The password']
+ div[id='user-message'] > label
+ #answerDiv > .dragDropSmallBox
+
+
+       + :bitişik kardeşi
+          > :çocukları     / * -> İÇİNDE GEÇEN  / ^ -> İLE BAŞLAYAN
+
+       $ -> İLE BİTEN   / [İD$='U_']  /  input#search
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+                                                  XPATH SELECTOR                                             26
+
+
+//div[text()='Sauce Labs Backpack']
+//button[contains(@id,'-labs-backpack')]
+//button[starts-with(@id,'back-to-')]
+//a[@id='item_1_title_link']/ div
+//div[@class='inventory_details_price']/following-sibling::button (BİTİŞİK KARDEŞ)
+//div[@class='cart_footer']/button[2]
+(//a[contains(@href, '/users')])[6]
+div[class='product-cards-wrapper--click'] > a[title='Live']
+//a[contains(@href ,'login')]
+//tagname[text()='message']/.. *BİR ÜST PARENTE GİDER
+//*[STARTS-WİTH(@İD,'U_')]**İD Sİ U İLE BAŞLAYAN
+//*[ENDS-WİTH(@İD,'_4545')]***İD Sİ 4545 İLE BİTEN
+//*[CONTAİNS(@İD,'U_')]*****İD SİNDE U OLAN
+//H2[CONTAİNS(TEXT(),'POPULAR RİGHT NOW')]****TEXT İNDE POPULAR RİGHT NOW GEÇEN
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+                                       FRAMEWORK İN SELENİUM  REUSABLE METHODS FOR COMMON FUNCTİONALİTİES
+                                                          YOUTUBE SELENİUM TEK AUTOMATİON DA
+
+
+    // THİS FOR CLİCK ACTİON // ELEMENT TIKLANANA KADAR
+   public void clickingOnWebElement(WebElement,long waitTimeSeconds){
+   WebDriverWait webWait=new WebDriverWait(driver,Duration.ofSeconds(waitTimeInSeconds));
+   WebElement elements  =null;
+   elements =webwait.until(ExpectedConditions.elementToBeClickAble(element));
+   elements.click();
+   }
+
+
+   //THİS FOR SENDKEYS ACTİON :::ON TEXT FİELD.  //
+   public void sendKeysOnWebElement(WebElement element,String Text){
+   element.click();
+   element.clear();
+   element.sendKeys();
+
+   }
+//THİS METHOD İS FOR SELECTİNG DROPDOWNLİST  // TEXTE GÖRE SELECT
+
+public void selectByVisibleText(WebElement element  ,String text){
+Select select =new Select (element);
+select.selectByVisibleText(text);
+
+}
+   //ACCEPTİNG AN ALERT FROM UI   //UI DAKİ ALERTİ KABUL ET
+
+  public void acceptAlert(WebDriver driver){
+  driver.switchTo().alert().accept();
+
+  }
+  //THİS METHOD İS FOR MOUSE HOVERİNG FROM ONE ELEMET TO OTHER ELEMENT   // MOUSE ELEMENTE KAYDIRMA
+
+  public void mouseHoverAndClickElement(WebElement element){
+  Actions action=new Actions(driver);
+  action.moveToElement(element).click().build().perform();
+  }
+
+  //GET WİNDOWHANDLE METHOD    // CHİLD WİNDOWLARIN ID LERİNİ ALMAK İÇİN
+
+  public String getCurrentWindowId(){
+  return driver.getWindowHandle();
+
+  }
+  İLAVE OLARAK   ,DELETE ALL COOKİES , BROWSER ,URL, SCREENSHOT
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
